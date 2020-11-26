@@ -1,0 +1,17 @@
+- name: 'Deploy base infrastrucure'
+  hosts: localhost
+  tasks: 
+  - include_role:
+      name: alpha-deploy-lib/resolve-params
+    vars:
+      stacks:
+      - type: CORE
+        name: alpha-base
+      - type: BASE
+        name: alpha-base-infra
+        
+  - include_role: 
+      name: alpha-deploy-lib/deploy-cloudformation
+    vars:
+      cloud_formation: '{{ playbook_dir }}/files/db.yml'
+      type: DYNAMODB
