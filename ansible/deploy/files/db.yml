@@ -12,6 +12,8 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
       AttributeDefinitions:
         - AttributeName: "Id"
           AttributeType: "S"
@@ -23,30 +25,37 @@ Resources:
         - AttributeName: "EventSeq"
           KeyType: "RANGE"
       TableName: !Sub "${EnvironmentNameLower}-${ServiceName}-event-store-ddb"
-  EffectsTable:
+  EffectsTableV1:
     Type: AWS::DynamoDB::Table
     Properties:
       BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
       AttributeDefinitions:
         - AttributeName: "Id"
           AttributeType: "S"
       KeySchema:
         - AttributeName: "Id"
           KeyType: "HASH"
-      TableName: !Sub "${EnvironmentNameLower}-${ServiceName}-effects-store-ddb"
+      TableName: !Sub "${EnvironmentNameLower}-${ServiceName}-effect-store-ddb"
   IdentityTable:
     Type: AWS::DynamoDB::Table
     Properties:
-     BillingMode: PAY_PER_REQUEST
-     AttributeDefinitions:
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+      AttributeDefinitions:
         - AttributeName: "Id"
           AttributeType: "S"
-     KeySchema:
+      KeySchema:
         - AttributeName: "Id"
           KeyType: "HASH"
-     TableName: !Sub "${EnvironmentNameLower}-${ServiceName}-identity-store-ddb"
+      TableName: !Sub "${EnvironmentNameLower}-${ServiceName}-identity-store-ddb"
 
 Outputs:
   DatabaseName:
     Value: !Ref EventsTable
-
+  EventsTableStream:
+    Value: !GetAtt EventsTable.StreamArn
+  EffectsTableStream:
+    Value: !GetAtt EffectsTableV1.StreamArn
